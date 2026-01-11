@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# Alembic (선택)
+# 보통 versions는 커밋해야 함(마이그레이션 파일)
+# alembic/versions/  <-- 절대 ignore 하지 마세요
+alembic/*.log
+
+# Docker (선택)
+# 로컬에서만 쓰는 override는 커밋 안 하는 편
+docker-compose.override.yml
+
+# DB data (만약 로컬 폴더로 볼륨을 매핑할 경우)
+pgdata/
