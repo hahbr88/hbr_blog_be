@@ -45,9 +45,12 @@ Docker Compose v2
 
 
 ## 실행 방법 (개발환경)
-1) 빌드 & 실행
+1) 빌드 & 실행 (재시작)
 ```bash
+# 가장 안전한 재시작(환경변수/의존성까지 반영)
 docker compose up -d --build
+# 그냥 컨테이너만 재시작(코드 외 설정 변경이 없을 때)
+docker compose restart api
 ```
 2) 로그 확인
 ```bash
@@ -58,6 +61,7 @@ docker compose logs -f api
 docker compose ps
 docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"
 ````
+
 
 ## 접속 URL
 Swagger: http://localhost:8152/docs

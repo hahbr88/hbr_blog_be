@@ -11,6 +11,7 @@ class Post(Base):
     content: Mapped[str] = mapped_column(Text)
 
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_temp: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

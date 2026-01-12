@@ -8,17 +8,28 @@ class PostService:
     def __init__(self):
         self.repo = PostRepo()
 
+    # ✅ 공개 GET: 발행글만
+    def list_public_posts(self, db: Session, *, q: str | None, skip: int, limit: int) -> list[Post]:
+        return self.repo.list(db, q=q, skip=skip, limit=limit, include_unpublished=False)
+
+    def get_public_post(self, db: Session, post_id: int) -> Post:
+        post = self.repo.get(db, post_id, include_unpublished=False)
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+        return post
+
+    # (기존 관리자/내부용 그대로)
     def list_posts(self, db: Session, *, q: str | None, skip: int, limit: int) -> list[Post]:
-        return self.repo.list(db, q=q, skip=skip, limit=limit)
+        return self.repo.list(db, q=q, skip=skip, limit=limit, include_unpublished=True)
 
     def get_post(self, db: Session, post_id: int) -> Post:
-        post = self.repo.get(db, post_id)
+        post = self.repo.get(db, post_id, include_unpublished=True)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
         return post
 
     def create_post(self, db: Session, data: PostCreate) -> Post:
-        post = Post(title=data.title, content=data.content)
+        post = Post(title=data.title, content=data.content, is_temp=data.is_temp)
         return self.repo.create(db, post)
 
     def update_post(self, db: Session, post_id: int, data: PostUpdate) -> Post:
@@ -30,6 +41,10 @@ class PostService:
             post.content = data.content
         if data.is_published is not None:
             post.is_published = data.is_published
+        if data.is_temp is not None:
+            post.is_temp = data.is_temp
+        if data.is_published is True:
+            post.is_temp = False
 
         return self.repo.save(db, post)
 
@@ -37,4 +52,3 @@ class PostService:
         post = self.get_post(db, post_id)
         post.is_deleted = True
         self.repo.save(db, post)
-        

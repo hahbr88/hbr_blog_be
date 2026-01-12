@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -6,5 +9,37 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "HBR Blog API"
     DATABASE_URL: str = "sqlite:///./dev.db"
+
+    # 관리자 토큰 (필수)
+    ADMIN_TOKEN: str = Field(default="")
+
+    # (옵션) 쓰기 요청을 허용할 IP 목록 (콤마로 구분)
+    # 예: "1.2.3.4, 5.6.7.8"
+    ADMIN_ALLOWED_IPS: list[str] = Field(default_factory=list)
+
+    # (배포 옵션) reverse proxy/ALB 뒤에 있을 때만 True 권장
+    TRUST_X_FORWARDED_FOR: bool = False
+
+    # TRUST_X_FORWARDED_FOR=True일 때,
+    # X-Forwarded-For를 "신뢰할 프록시" IP 목록 (콤마 구분)
+    TRUSTED_PROXY_IPS: list[str] = Field(default_factory=list)
+
+    @field_validator("ADMIN_ALLOWED_IPS", mode="before")
+    @classmethod
+    def _split_admin_ips(cls, v):
+        if v is None or v == "":
+            return []
+        if isinstance(v, str):
+            return [s.strip() for s in v.split(",") if s.strip()]
+        return v
+
+    @field_validator("TRUSTED_PROXY_IPS", mode="before")
+    @classmethod
+    def _split_trusted_proxy_ips(cls, v):
+        if v is None or v == "":
+            return []
+        if isinstance(v, str):
+            return [s.strip() for s in v.split(",") if s.strip()]
+        return v
 
 settings = Settings()
