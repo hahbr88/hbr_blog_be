@@ -4,3 +4,4 @@ sqlalchemy>=2.0
 pydantic-settings
 psycopg[binary]
 alembic
+PyJWT==2.10.1

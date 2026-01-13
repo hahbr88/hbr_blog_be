@@ -23,7 +23,8 @@ hbr_blog_be/
 │  │     └─ router.py
 │  ├─ core/
 │  │  ├─ config.py
-│  │  └─ database.py
+│  │  ├─ database.py
+│  │  └─ security.py
 │  ├─ models/
 │  │  ├─ __init__.py
 │  │  └─ post.py

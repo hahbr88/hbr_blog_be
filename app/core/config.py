@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     APP_NAME: str = "HBR Blog API"
     DATABASE_URL: str = "sqlite:///./dev.db"
 
-    # 관리자 토큰 (필수)
-    ADMIN_TOKEN: str = Field(default="")
+    # 로컬(dev)에서만 사용할 토큰
+    DEV_ADMIN_TOKEN: str = Field(default="")
 
     # (옵션) 쓰기 요청을 허용할 IP 목록 (콤마로 구분)
     # 예: "1.2.3.4, 5.6.7.8"
@@ -23,6 +23,12 @@ class Settings(BaseSettings):
     # TRUST_X_FORWARDED_FOR=True일 때,
     # X-Forwarded-For를 "신뢰할 프록시" IP 목록 (콤마 구분)
     TRUSTED_PROXY_IPS: list[str] = Field(default_factory=list)
+
+    ENV: str = "dev"
+    CF_ACCESS_TEAM_NAME: str | None = None
+    CF_ACCESS_AUD: str | None = None
+    CF_ACCESS_ALLOWED_EMAILS: list[str] = Field(default_factory=list)
+    TRUST_CF_CONNECTING_IP: bool = False
 
     @field_validator("ADMIN_ALLOWED_IPS", mode="before")
     @classmethod
