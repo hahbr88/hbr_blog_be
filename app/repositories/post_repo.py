@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.models.post import Post
 
+
 class PostRepo:
     def list(
         self,
@@ -17,7 +18,7 @@ class PostRepo:
 
         if not include_unpublished:
             stmt = stmt.where(Post.is_published == True)  # noqa: E712
-            stmt = stmt.where(Post.is_temp == False)      # noqa: E712
+            stmt = stmt.where(Post.is_temp == False)  # noqa: E712
 
         if q:
             # contains는 대소문자 민감할 수 있음. 원하면 ilike로 바꿔도 됨.

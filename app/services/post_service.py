@@ -1,16 +1,22 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+
 from app.models.post import Post
 from app.repositories.post_repo import PostRepo
 from app.schemas.post import PostCreate, PostUpdate
+
 
 class PostService:
     def __init__(self):
         self.repo = PostRepo()
 
     # ✅ 공개 GET: 발행글만
-    def list_public_posts(self, db: Session, *, q: str | None, skip: int, limit: int) -> list[Post]:
-        return self.repo.list(db, q=q, skip=skip, limit=limit, include_unpublished=False)
+    def list_public_posts(
+        self, db: Session, *, q: str | None, skip: int, limit: int
+    ) -> list[Post]:
+        return self.repo.list(
+            db, q=q, skip=skip, limit=limit, include_unpublished=False
+        )
 
     def get_public_post(self, db: Session, post_id: int) -> Post:
         post = self.repo.get(db, post_id, include_unpublished=False)
@@ -19,7 +25,9 @@ class PostService:
         return post
 
     # (기존 관리자/내부용 그대로)
-    def list_posts(self, db: Session, *, q: str | None, skip: int, limit: int) -> list[Post]:
+    def list_posts(
+        self, db: Session, *, q: str | None, skip: int, limit: int
+    ) -> list[Post]:
         return self.repo.list(db, q=q, skip=skip, limit=limit, include_unpublished=True)
 
     def get_post(self, db: Session, post_id: int) -> Post:
@@ -29,7 +37,12 @@ class PostService:
         return post
 
     def create_post(self, db: Session, data: PostCreate) -> Post:
-        post = Post(title=data.title, content=data.content, is_temp=data.is_temp)
+        post = Post(
+            title=data.title,
+            content=data.content,
+            is_published=True,
+            is_temp=False,
+        )
         return self.repo.create(db, post)
 
     def update_post(self, db: Session, post_id: int, data: PostUpdate) -> Post:

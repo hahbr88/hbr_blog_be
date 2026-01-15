@@ -1,7 +1,10 @@
 from datetime import datetime
-from sqlalchemy import String, Text, Boolean, DateTime
+
+from sqlalchemy import Boolean, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+
 from app.core.database import Base
+
 
 class Post(Base):
     __tablename__ = "posts"
@@ -15,4 +18,6 @@ class Post(Base):
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )

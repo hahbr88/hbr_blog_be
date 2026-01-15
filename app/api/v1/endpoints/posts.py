@@ -8,6 +8,7 @@ from app.services.post_service import PostService
 router = APIRouter(prefix="/posts", tags=["posts"])
 svc = PostService()
 
+
 # ✅ 공개 GET: 발행글만
 @router.get("", response_model=list[PostOut])
 def list_posts(
@@ -17,6 +18,7 @@ def list_posts(
     db: Session = Depends(get_db),
 ):
     return svc.list_public_posts(db, q=q, skip=skip, limit=limit)
+
 
 @router.get("/{post_id}", response_model=PostOut)
 def get_post(post_id: int, db: Session = Depends(get_db)):

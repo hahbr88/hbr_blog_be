@@ -1,6 +1,7 @@
 from fastapi import APIRouter
+
 # from app.api.v1.endpoints.posts import router as posts_router
-from app.api.v1.endpoints import posts, admin_posts
+from app.api.v1.endpoints import admin_posts, posts
 
 api_router = APIRouter()
 api_router.include_router(posts.router)

@@ -1,15 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
-from app.api.v1.router import api_router
 import app.models  # noqa: F401
+from app.api.v1.router import api_router
+from app.core.config import settings
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.APP_NAME)
 
-        # CORS (dev)
+    # CORS (dev)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -28,5 +28,6 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     return app
+
 
 app = create_app()

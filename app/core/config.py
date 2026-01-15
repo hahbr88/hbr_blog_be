@@ -3,6 +3,7 @@ from __future__ import annotations
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     # ✅ 컨테이너/프로덕션: OS 환경변수만 읽는다 (env_file 제거)
     model_config = SettingsConfigDict(env_ignore_empty=True)
@@ -47,5 +48,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return [s.strip() for s in v.split(",") if s.strip()]
         return v
+
 
 settings = Settings()

@@ -123,8 +123,8 @@ async def require_admin(
     access_jwt: str | None = Depends(cf_access_jwt_header),
 ) -> dict:
     """
-    ✅ dev: X-ADMIN-TOKEN == DEV_ADMIN_TOKEN (+ 선택 IP 제한)
-    ✅ prod: Cloudflare Access JWT 검증 (+ 선택 IP 제한)
+    🛠️ dev: X-ADMIN-TOKEN == DEV_ADMIN_TOKEN (+ 선택 IP 제한)
+    🔐 prod: Cloudflare Access JWT 검증 (+ 선택 IP 제한)
 
     반환값:
       - dev: {"mode": "dev"}

@@ -1,8 +1,9 @@
 import os
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 config = context.config
 
@@ -10,10 +11,9 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # ✅ 앱의 Base를 가져와 metadata로 사용
-from app.core.database import Base  # noqa: E402
-
 # ✅ 모델들을 import해서 Base에 등록되게 함 (중요!)
 import app.models  # noqa: F401,E402
+from app.core.database import Base  # noqa: E402
 
 target_metadata = Base.metadata
 
