@@ -5,6 +5,7 @@ pydantic-settings
 psycopg[binary]
 alembic
 PyJWT==2.10.1
+Ruff
 python-multipart
 boto3
 pillow

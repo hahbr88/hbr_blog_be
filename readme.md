@@ -69,6 +69,10 @@ Swagger: http://localhost:8152/docs
 
 Health: http://localhost:8152/health
 
+MinIO API: http://localhost:9000
+
+MinIO Console: http://localhost:9001
+
 ---
 
 ## Docker Compose 구성 요약
@@ -88,7 +92,42 @@ API (FastAPI)
 - DB 연결: `DATABASE_URL` 환경변수로 연결
 - 시작 커맨드:
   - `alembic upgrade head`로 마이그레이션 자동 적용
-  - `uvicorn ... --reload`로 개발 편의성 확보
+- `uvicorn ... --reload`로 개발 편의성 확보
+
+MinIO (S3 호환 스토리지)
+- API 포트: `9000:9000`
+- 콘솔: `9001:9001`
+- 버킷: `MINIO_BUCKET`에 지정
+- 공개 접근: `minio-init`에서 버킷에 public download 권한 설정
+
+Redis + RQ Worker (썸네일 비동기 처리)
+- Redis: `6379:6379`
+- Worker: `rq worker $THUMBNAIL_QUEUE_NAME`
+
+---
+
+## Storage 설정 (로컬 MinIO 기준)
+`.env`에 아래 값이 필요합니다.
+
+```
+STORAGE_BACKEND=s3
+S3_ENDPOINT_URL=http://minio:9000
+S3_BUCKET=hbr-uploads
+S3_ACCESS_KEY=minioadmin
+S3_SECRET_KEY=minioadmin123
+S3_PUBLIC_BASE_URL=http://localhost:9000/hbr-uploads
+```
+
+로컬 파일 저장을 사용하려면 `STORAGE_BACKEND=local`로 바꾸고,
+`PUBLIC_BASE_URL=http://localhost:8152`를 지정하면 됩니다.
+
+## Thumbnail 비동기 처리 (RQ)
+```
+THUMBNAIL_PROCESSOR=rq
+THUMBNAIL_QUEUE_NAME=thumbnails
+THUMBNAIL_MAX_RETRIES=3
+REDIS_URL=redis://redis:6379/0
+```
 
 ---
 

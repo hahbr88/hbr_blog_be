@@ -10,6 +10,25 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "HBR Blog API"
     DATABASE_URL: str = "sqlite:///./dev.db"
+    UPLOAD_DIR: str = "uploads"
+    STORAGE_BACKEND: str = "local"  # local | s3
+    PUBLIC_BASE_URL: str = "http://localhost:8152"
+    CDN_BASE_URL: str = ""
+
+    S3_ENDPOINT_URL: str | None = None
+    S3_REGION: str = "us-east-1"
+    S3_BUCKET: str = ""
+    S3_ACCESS_KEY: str = ""
+    S3_SECRET_KEY: str = ""
+    S3_PUBLIC_BASE_URL: str = ""
+
+    THUMBNAIL_MAX_SIZE: int = 512
+    THUMBNAIL_FORMAT: str = "JPEG"
+    THUMBNAIL_QUALITY: int = 85
+    THUMBNAIL_PROCESSOR: str = "background"  # background | rq
+    THUMBNAIL_QUEUE_NAME: str = "thumbnails"
+    THUMBNAIL_MAX_RETRIES: int = 3
+    REDIS_URL: str = "redis://redis:6379/0"
 
     # 로컬(dev)에서만 사용할 토큰
     DEV_ADMIN_TOKEN: str = Field(default="")

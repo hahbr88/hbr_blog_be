@@ -20,6 +20,16 @@ svc = PostService()
 def create_post(payload: PostCreate, db: Session = Depends(get_db)):
     return svc.create_post(db, payload)
 
+# 🔒 관리자: 임시저장생성
+@router.post(
+    "/temp",
+    response_model=PostOut,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
+)
+def create_temp_post(payload: PostCreate, db: Session = Depends(get_db)):
+    return svc.create_temp_post(db, payload)
+
 
 # 🔒 관리자: 수정
 @router.patch(
