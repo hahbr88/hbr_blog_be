@@ -40,44 +40,51 @@ hbr_blog_be/
 ```
 
 ## 요구사항
+
 Docker Desktop (또는 Docker Engine)
 Docker Compose v2
 (선택) 로컬 psql / DBeaver 등 DB 클라이언트
 
-
 ## 실행 방법 (개발환경)
-1) 빌드 & 실행 (재시작)
-```bash
-# 가장 안전한 재시작(환경변수/의존성까지 반영)
-docker compose up -d --build
-# 그냥 컨테이너만 재시작(코드 외 설정 변경이 없을 때)
-docker compose restart api
-```
-2) 로그 확인
-```bash
-docker compose logs -f api
-```
-3) 상태 확인
+
+  1) 빌드 & 실행 (재시작)
+
+    ```bash
+      # 가장 안전한 재시작(환경변수/의존성까지 반영)
+      docker compose up -d --build
+      # 그냥 컨테이너만 재시작(코드 외 설정 변경이 없을 때)
+      docker compose restart api
+    ```
+
+  2) 로그 확인
+
+  ```bash
+  docker compose logs -f api
+  ```
+
+  1) 상태 확인
+
 ```bash
 docker compose ps
 docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"
 ````
 
-
 ## 접속 URL
-Swagger: http://localhost:8152/docs
 
-Health: http://localhost:8152/health
+Swagger: <http://localhost:8152/docs>
 
-MinIO API: http://localhost:9000
+Health: <http://localhost:8152/health>
 
-MinIO Console: http://localhost:9001
+MinIO API: <http://localhost:9000>
+
+MinIO Console: <http://localhost:9001>
 
 ---
 
 ## Docker Compose 구성 요약
 
 DB (Postgres)
+
 - 이미지: `postgres:16-alpine`
 - 컨테이너: `hbr-postgres`
 - 포트: `5432:5432` (로컬에서 psql/DBeaver 접속용)
@@ -85,6 +92,7 @@ DB (Postgres)
 - healthcheck: `pg_isready`
 
 API (FastAPI)
+
 - 컨테이너: `hbr-blog-api`
 - 포트: `8152:8000`
 - 코드 마운트: `.:/code`
@@ -95,21 +103,24 @@ API (FastAPI)
 - `uvicorn ... --reload`로 개발 편의성 확보
 
 MinIO (S3 호환 스토리지)
+
 - API 포트: `9000:9000`
 - 콘솔: `9001:9001`
 - 버킷: `MINIO_BUCKET`에 지정
 - 공개 접근: `minio-init`에서 버킷에 public download 권한 설정
 
 Redis + RQ Worker (썸네일 비동기 처리)
+
 - Redis: `6379:6379`
 - Worker: `rq worker $THUMBNAIL_QUEUE_NAME`
 
 ---
 
 ## Storage 설정 (로컬 MinIO 기준)
+
 `.env`에 아래 값이 필요합니다.
 
-```
+```env
 STORAGE_BACKEND=s3
 S3_ENDPOINT_URL=http://minio:9000
 S3_BUCKET=hbr-uploads
@@ -122,7 +133,8 @@ S3_PUBLIC_BASE_URL=http://localhost:9000/hbr-uploads
 `PUBLIC_BASE_URL=http://localhost:8152`를 지정하면 됩니다.
 
 ## Thumbnail 비동기 처리 (RQ)
-```
+
+```env
 THUMBNAIL_PROCESSOR=rq
 THUMBNAIL_QUEUE_NAME=thumbnails
 THUMBNAIL_MAX_RETRIES=3
@@ -132,12 +144,15 @@ REDIS_URL=redis://redis:6379/0
 ---
 
 ## DB 접속 (psql)
+
 1) 컨테이너로 접속
+
 ```bash
 docker exec -it hbr-postgres psql -U hbr -d hbr_blog
 ````
 
-2) 테이블 / 마이그레이션 상태 확인
+1) 테이블 / 마이그레이션 상태 확인
+
 ```bash
 \dt
 \d posts
@@ -147,22 +162,26 @@ SELECT * FROM alembic_version;
 ## Alembic 마이그레이션 워크플로우
 
 - 현재 마이그레이션 버전 확인
-```
+
+```bash
 docker compose exec api alembic current
 ```
 
 - 모델 변경 → 마이그레이션 파일 생성
-```
+
+```bash
 docker compose exec api alembic revision --autogenerate -m "describe change"
 ```
 
 - 마이그레이션 적용
-```
+
+```bash
 docker compose exec api alembic upgrade head
 ```
 
 - 한 단계 롤백
-```
+
+```bash
 docker compose exec api alembic downgrade -1
 ```
 
