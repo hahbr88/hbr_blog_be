@@ -1,8 +1,7 @@
 from datetime import datetime
 import re
 
-from sqlalchemy import Boolean, Column, DateTime, String, Text
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import JSON, Boolean, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -19,8 +18,8 @@ class Post(Base):
     is_temp: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    # ✅ tags 추가: NULL 방지 + 기본 빈 배열
-    tags = Column(ARRAY(Text), nullable=False, server_default="{}")
+    # JSON array for cross-db compatibility (sqlite/postgres)
+    tags: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(

@@ -1,6 +1,15 @@
 from typing import Final
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Request, UploadFile, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    HTTPException,
+    Request,
+    UploadFile,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -13,6 +22,26 @@ router = APIRouter(prefix="/uploads", tags=["uploads"])
 svc = UploadService()
 
 _ALLOWED_PREFIX: Final[str] = "image/"
+_READ_CHUNK_SIZE: Final[int] = 1024 * 1024
+
+
+def _read_upload_limited(image: UploadFile, max_bytes: int) -> bytes:
+    chunks: list[bytes] = []
+    total = 0
+
+    while True:
+        chunk = image.file.read(_READ_CHUNK_SIZE)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > max_bytes:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=f"File too large. Max {max_bytes} bytes",
+            )
+        chunks.append(chunk)
+
+    return b"".join(chunks)
 
 
 @router.post(
@@ -32,7 +61,7 @@ def upload_image(
     base_url = str(request.base_url).rstrip("/")
 
     try:
-        data = image.file.read()
+        data = _read_upload_limited(image, settings.UPLOAD_MAX_BYTES)
         upload = svc.create_upload(
             db,
             data=data,

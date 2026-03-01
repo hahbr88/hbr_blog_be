@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     THUMBNAIL_QUEUE_NAME: str = "thumbnails"
     THUMBNAIL_MAX_RETRIES: int = 3
     REDIS_URL: str = "redis://redis:6379/0"
+    UPLOAD_MAX_BYTES: int = 10 * 1024 * 1024
 
     # 로컬(dev)에서만 사용할 토큰
     DEV_ADMIN_TOKEN: str = Field(default="")

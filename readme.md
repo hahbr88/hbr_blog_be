@@ -246,7 +246,7 @@ flowchart TD
 
 ---
 
-### To Do
+### ToDo
 
 - posts CRUD를 실제 DB 기반으로 완전 리팩토링(세션/레포지토리 패턴)
 - soft delete(is_deleted) 정책 반영(list에서 제외 등)
